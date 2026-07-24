@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Lint · Type-check · Build
+    runs-on: ubuntu-latest
+    # next.config reads this at load time (lint & build). A placeholder is fine
+    # for CI validation — the real value is set per-environment on Vercel.
+    env:
+      NEXT_PUBLIC_API_URL: https://api.example.com
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Scoped to the shipped app (@nexus/dashboard) and its workspace deps
+      # (sdk, types). The `docs` app is unconfigured Turborepo scaffolding.
+      - name: Lint
+        run: pnpm lint --filter=@nexus/dashboard
+
+      - name: Type-check
+        run: pnpm type-check --filter=@nexus/dashboard...
+
+      - name: Build
+        run: pnpm build --filter=@nexus/dashboard...
