@@ -12,7 +12,7 @@
   "dependencies": {
     "@nexus/sdk": "workspace:*",
     "@nexus/types": "workspace:*",
-    "next": "15.1.4",
+    "next": "15.5.21",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "@tanstack/react-query": "^5.62.16",
@@ -51,7 +51,7 @@
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.49",
     "eslint": "^9.17.0",
-    "eslint-config-next": "15.1.4",
+    "eslint-config-next": "15.5.21",
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.9"
   }
