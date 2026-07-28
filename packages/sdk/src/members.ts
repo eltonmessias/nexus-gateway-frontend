@@ -1,4 +1,4 @@
-import type { OrgMember, OrgMemberInviteRequest, OrgMemberRoleRequest } from '@nexus/types'
+import type { OrgMember, OrgMemberInvited, OrgMemberInviteRequest, OrgMemberRoleRequest } from '@nexus/types'
 import { NexusHttpClient } from './client'
 
 export class MembersResource extends NexusHttpClient {
@@ -7,7 +7,7 @@ export class MembersResource extends NexusHttpClient {
   }
 
   invite(organizationId: string, body: OrgMemberInviteRequest) {
-    return this.post<OrgMember>(`/api/iam/members/organization/${organizationId}/invite`, body)
+    return this.post<OrgMemberInvited>(`/api/iam/members/organization/${organizationId}/invite`, body)
   }
 
   changeRole(memberId: string, body: OrgMemberRoleRequest) {

@@ -227,6 +227,29 @@ export interface OrgMember {
   updatedAt: string
 }
 
+/** Returned when a member is invited — carries the one-time invite token. */
+export interface OrgMemberInvited {
+  id: string
+  organizationId: string
+  name: string
+  email: string
+  role: OrgMemberRole
+  status: OrgMemberStatus
+  joinedAt: string
+  inviteToken: string
+}
+
+export interface InvitationDetails {
+  organizationName: string
+  email: string
+  name: string
+  role: string
+}
+
+export interface AcceptInvitationRequest {
+  password: string
+}
+
 // ─── Feature Flags ────────────────────────────────────────────────────────────
 
 export interface FlagRequest {

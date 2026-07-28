@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { LogOut, ChevronRight, Shield } from 'lucide-react'
+import { LogOut, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -110,15 +110,6 @@ export function PortalSidebar() {
       <div className="border-t border-sidebar-border p-3 space-y-1">
         {userEmail && (
           <p className="px-3 py-1 text-xs text-sidebar-foreground/50 truncate">{userEmail}</p>
-        )}
-        {canDo(userRole, 'ADMIN') && (
-          <Link
-            href={routes.dashboard.overview}
-            className="flex items-center gap-3 rounded-lg px-3 py-2 text-xs text-sidebar-foreground/50 hover:bg-sidebar-accent/30 hover:text-sidebar-foreground/80 transition-colors"
-          >
-            <Shield className="h-3.5 w-3.5 shrink-0" aria-hidden />
-            Admin Panel
-          </Link>
         )}
         <Button
           variant="ghost"

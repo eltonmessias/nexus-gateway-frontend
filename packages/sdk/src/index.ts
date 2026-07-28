@@ -13,5 +13,6 @@ export { JobsResource } from './jobs'
 export { SearchResource } from './search'
 export { AuditResource } from './audit'
 export { MembersResource } from './members'
+export { InvitationsResource } from './invitations'
 
 export type * from '@nexus/types'

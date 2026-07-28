@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { format } from 'date-fns'
-import { UserPlus, MoreHorizontal, Mail } from 'lucide-react'
+import { UserPlus, MoreHorizontal, Mail, Copy } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import type { OrgMember, OrgMemberRole } from '@nexus/types'
@@ -47,6 +47,7 @@ export default function MembersPage() {
   const canManage      = canDo(userRole, 'ADMIN')
 
   const [inviteOpen, setInviteOpen] = useState(false)
+  const [inviteLink, setInviteLink] = useState<string | null>(null)
 
   const { data: members = [], isLoading } = useQuery<OrgMember[]>({
     queryKey: ['portal-members', organizationId],
@@ -63,9 +64,10 @@ export default function MembersPage() {
   const inviteMutation = useMutation({
     mutationFn: (body: InviteForm) =>
       nexus.client.members.invite(organizationId!, { name: body.name || undefined, email: body.email, role: body.role }),
-    onSuccess: (newMember) => {
-      qc.setQueryData<OrgMember[]>(['portal-members', organizationId], (prev = []) => [...prev, newMember])
-      toast.success(`Invitation sent to ${newMember.email}`)
+    onSuccess: (invited) => {
+      qc.invalidateQueries({ queryKey: ['portal-members', organizationId] })
+      setInviteLink(`${window.location.origin}/accept-invite?token=${invited.inviteToken}`)
+      toast.success(`${invited.email} invited — share the link below`)
       setInviteOpen(false)
       reset()
     },
@@ -113,7 +115,7 @@ export default function MembersPage() {
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Invite Team Member</DialogTitle>
-                <DialogDescription>They will receive an email to join your organisation.</DialogDescription>
+                <DialogDescription>After inviting, you&apos;ll get a link to share so they can set a password and join.</DialogDescription>
               </DialogHeader>
               <form onSubmit={handleSubmit((d) => inviteMutation.mutate(d))}>
                 <div className="space-y-4 py-2">
@@ -149,6 +151,27 @@ export default function MembersPage() {
           </Dialog>
         )}
       </div>
+
+      {inviteLink && (
+        <div className="rounded-md border border-blue-500/40 bg-blue-500/10 p-4">
+          <p className="text-sm font-medium mb-2">Invitation link — send it to the person you invited:</p>
+          <div className="flex items-center gap-2">
+            <code className="flex-1 text-xs bg-background rounded px-3 py-2 border font-mono break-all">{inviteLink}</code>
+            <Button
+              size="icon"
+              variant="outline"
+              aria-label="Copy invitation link"
+              onClick={() => { navigator.clipboard.writeText(inviteLink); toast.success('Link copied!') }}
+            >
+              <Copy className="h-4 w-4" aria-hidden />
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground mt-2">
+            They open it to set a password and activate their account. The link expires in 7 days.
+          </p>
+          <Button variant="ghost" size="sm" className="mt-1 text-xs" onClick={() => setInviteLink(null)}>Dismiss</Button>
+        </div>
+      )}
 
       <div className="rounded-lg border overflow-hidden">
         <table className="w-full text-sm">

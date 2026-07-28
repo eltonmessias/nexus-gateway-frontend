@@ -10,6 +10,7 @@ import { JobsResource } from './jobs'
 import { SearchResource } from './search'
 import { AuditResource } from './audit'
 import { MembersResource } from './members'
+import { InvitationsResource } from './invitations'
 
 export class NexusSDK {
   readonly auth: AuthResource
@@ -23,6 +24,7 @@ export class NexusSDK {
   readonly search: SearchResource
   readonly audit: AuditResource
   readonly members: MembersResource
+  readonly invitations: InvitationsResource
 
   constructor(config: NexusClientConfig) {
     this.auth = new AuthResource(config)
@@ -36,6 +38,7 @@ export class NexusSDK {
     this.search = new SearchResource(config)
     this.audit = new AuditResource(config)
     this.members = new MembersResource(config)
+    this.invitations = new InvitationsResource(config)
   }
 }
 
